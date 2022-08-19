@@ -98,6 +98,14 @@ class SearchTree:
 
             element = self.__FindelementByValue(toExpand)
 
+            print(type(element))
+            print(type(element))
+            print(type(element))
+            print(type(element))
+            print(type(element))
+            print(type(element))
+            print(type(element))
+            print(type(element))
             print(f"chei aqui com o elemento: {element.value}")
 
             if element.value == destino:
@@ -167,13 +175,13 @@ class SearchTree:
             print(f"achei {value}")
             return root
         else:
-            print(f"procurando nos filhos de {root.value}")
-            for x in root.childrens:
-                print(f"Filho: {x.value}")
-            print(f"filhos de {root.value} : {root.childrens}")
-            for child in root.childrens:
-                if self.__FindelementByValue(value, child) != None:
+            print(f"operando Falso {root.value}")
+            if len(root.childrens) > 0:
+                for child in root.childrens:
                     return self.__FindelementByValue(value, child)
+            else:
+                print("entrei no break")
+                breakpoint
 
     def __PrintResultFrom(self, element : Node):
 

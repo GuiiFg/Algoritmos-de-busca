@@ -15,3 +15,8 @@ arvoreBusca.Buscar("A", "E")
 a = {"a" : "b"}
 
 a["b"] = "a"
+
+a = []
+
+for x in a:
+    print("ok")
