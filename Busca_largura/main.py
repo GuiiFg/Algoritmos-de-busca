@@ -10,13 +10,4 @@ map = dict(map)
 
 arvoreBusca = SearchTree(map)
 
-arvoreBusca.Buscar("A", "E")
-
-a = {"a" : "b"}
-
-a["b"] = "a"
-
-a = []
-
-for x in a:
-    print("ok")
+caminho = arvoreBusca.Buscar("A", "Z")

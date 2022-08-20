@@ -55,9 +55,9 @@ class SearchTree:
 
         self.__ValidarExistencia([de, para])
 
-        self.__frontierList["0"] = [de]
-
         self.__head = Node(de)
+
+        self.__frontierList["0"] = [self.__head]
 
         self.__IniciarBusca(para)
 
@@ -81,37 +81,35 @@ class SearchTree:
             if len(self.__frontierList[layer]) > 0:
                 for x in range(len(self.__frontierList[layer])):
                     print(f"entrei na layer {layer}")
-                    if self.__frontierList[layer][0] not in self.__closedList:
-                        print(f"Trocando toExp para {self.__frontierList[layer][0]}")
+                    if self.__frontierList[layer][0].value not in self.__closedList:
+                        print(f"Trocando toExp para {self.__frontierList[layer][0].value}")
                         toExpand.append(self.__frontierList[layer][0])
-                        break
                     else:
-                        print(f"deletei na layer {layer} : {self.__frontierList[layer][0]}")
+                        print(f"deletei na layer {layer} : {self.__frontierList[layer][0].value}")
                         self.__frontierList[layer].remove(
                             self.__frontierList[layer][0])
 
-       
+        withoutFrontier = True
+        for layer in layers:
+            if len(self.__frontierList[layer]) > 0:
+                withoutFrontier = False
+
+        finded = False
+
         if len(toExpand) > 0:
             toExpand = toExpand[0]
             print(self.__frontierList)
-            print(toExpand)
+            print(toExpand.value)
 
-            element = self.__FindelementByValue(toExpand)
-
-            print(type(element))
-            print(type(element))
-            print(type(element))
-            print(type(element))
-            print(type(element))
-            print(type(element))
-            print(type(element))
-            print(type(element))
-            print(f"chei aqui com o elemento: {element.value}")
+            element = toExpand
+            
+            print(f"achei! elemento: {element.value}")
 
             if element.value == destino:
                 self.__PrintResultFrom(element)
                 print("Result Find!")
-                breakpoint
+                return self.__showResult()
+                finded = True
 
             canExpand: list = self.__map[f"{element.value}"]
 
@@ -127,15 +125,15 @@ class SearchTree:
                 for x in canExpand:
                     if not self.__WayExist(x):
                         print(f"Registrando {x} como filho de {element.value}")
-                        element.childrens.append(
-                            Node(x, layer=element.layer + 1, father=element))
+                        son = Node(x, layer=element.layer + 1, father=element)
+                        element.childrens.append(son)
                         if f"{element.layer + 1}" not in list(self.__frontierList.keys()):
                             print("Nova layer")
-                            self.__frontierList[f"{element.layer + 1}"] = [x]
+                            self.__frontierList[f"{element.layer + 1}"] = [son]
                             print(self.__frontierList[f"{element.layer + 1}"])
                         else:
                             print("Inserido")
-                            self.__frontierList[f"{element.layer + 1}"].append(x)
+                            self.__frontierList[f"{element.layer + 1}"].append(son)
                             print(self.__frontierList[f"{element.layer + 1}"])
                     else:
                         print(f"Já existe caminho para {x}")
@@ -148,7 +146,11 @@ class SearchTree:
         else:
             print("Não existe para onde expandir")
 
-        self.__IniciarBusca(destino)
+        if not finded and not withoutFrontier:
+            self.__IniciarBusca(destino)
+        elif withoutFrontier and not finded:
+            print('\033[1;31m' + "Não existe caminho!" + '\033[0;37m')
+
 
         # print(f"elemento {element} valor: {element.value}, {canExpand}, {type(canExpand)}")
 
@@ -159,34 +161,39 @@ class SearchTree:
 
         for layer in layers:
             if len(self.__frontierList[layer]) > 0:
-                if value in list(self.__frontierList[layer]):
+                withWay = []
+                for x in list(self.__frontierList[layer]):
+                    withWay.append(x.value)
+                if value in withWay:
                     return True
 
         return False
-
-    def __FindelementByValue(self, value, root=None):
-
-        print(f"procurando {value}")
-
-        root = self.__head if root == None else root
-
-        print(f"operando {root.value} == {value}")
-        if root.value == value:
-            print(f"achei {value}")
-            return root
-        else:
-            print(f"operando Falso {root.value}")
-            if len(root.childrens) > 0:
-                for child in root.childrens:
-                    return self.__FindelementByValue(value, child)
-            else:
-                print("entrei no break")
-                breakpoint
 
     def __PrintResultFrom(self, element : Node):
 
         self.__result.append(element)
 
+        print(f"Caminho correto para: {element.value}")
+
         if element.father != None:
             self.__PrintResultFrom(element.father)
+            
+    def __showResult(self):
+
+        self.__result = self.result[::-1]
+
+        caminho = ""
+
+        for x in self.__result:
+            caminho += f" -> {x.value}"
+
+        print('\033[1;32m' + caminho + '\033[0;37m')
+
+        caminho = []
+        for x in self.__result:
+            caminho.append(x.value)
+
+        print(caminho)
+
+        return caminho
             
