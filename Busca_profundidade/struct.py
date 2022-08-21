@@ -1,3 +1,4 @@
+
 from Busca_largura.node import Node
 
 
@@ -87,7 +88,7 @@ class SearchTree:
         finded = False
 
         if len(toExpand) > 0:
-            toExpand = toExpand[0]
+            toExpand = toExpand[-1]
             print(self.__frontierList)
             print(toExpand.value)
 

@@ -1,4 +1,4 @@
-from Busca_largura.struct import SearchTree
+from Busca_profundidade.struct import SearchTree
 import json
 
 map = None
