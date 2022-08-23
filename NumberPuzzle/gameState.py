@@ -67,13 +67,32 @@ class GameSateControl:
         print("-------------------------")
 
     def __GenerateExpandStates(self):
-        pass
+        
+        zeroPosition = self.__FindZeroPosition()
+
+    def __FindZeroPosition(self):
+
+        position = [] # [layer(line), column]
+        layerCount = 0
+        for layer in self.__state:
+            if 0 in layer:
+                position.append(layerCount)
+                positionCount = 0
+                for value in layer:
+                    if value == 0:
+                        position.append(positionCount)
+                        break
+                    positionCount += 1
+
+                break
+            layerCount +=1
+
+        return position
+
 
 
         
 
-
-
-state = GameSateControl([0,8,7,1,2,3,4,5,6])
+state = GameSateControl([2,8,7,1,0,3,4,5,6])
 
 state.PrintState()
