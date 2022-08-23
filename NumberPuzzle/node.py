@@ -4,10 +4,11 @@ from NumberPuzzle.gameState import GameSateControl
 
 class Node:
 
-    def __init__(self, gameState: GameSateControl, father=None):
+    def __init__(self, gameState: GameSateControl, father=None, layer = 0):
 
         self.__gameState = gameState
         self.__father = father
+        self.__layer = layer
         self.__childrens = []
 
     @property
@@ -17,6 +18,14 @@ class Node:
     @gameState.setter
     def gameState(self, value):
         self.__gameState = value
+
+    @property
+    def layer(self):
+        return self.__layer
+
+    @layer.setter
+    def layer(self, value):
+        self.__layer = value
 
     @property
     def father(self):
