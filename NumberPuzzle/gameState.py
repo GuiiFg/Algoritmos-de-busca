@@ -15,10 +15,10 @@ class GameSateControl:
         
         # 
         self.__state = self.__LoadState(state)
-        self.__expandStates = None
+        self.__expandStates = []
 
         if state != None:
-            self.__GenerateExpandStates()
+            self.__CalculateExpandStates()
 
     @property
     def state(self):
@@ -27,6 +27,11 @@ class GameSateControl:
     @state.setter
     def state(self, valueList):
         self.__state = self.__LoadState(valueList)
+        self.__CalculateExpandStates()
+
+    @property
+    def expandStates(self):
+        return self.__expandStates
 
     # carrega um array para dentro do estado da classe
     def __LoadState(self, stateList : list):
@@ -47,16 +52,19 @@ class GameSateControl:
 
 
     # exporta o estado do game para um array linear
-    def __ExportState(self):
+    def __ExportState(self, state = None):
+        state = self.__state if state == None else state
         stateList = []
 
-        for layer in self.__state:
+        for layer in state:
             for value in layer:
                 stateList.append(value)
 
         return stateList
 
-    def PrintState(self):
+    def PrintState(self, state = None):
+
+        state = self.__state if state == None else state
 
         print("--------- Print ---------")
         print("Estado atual:")
@@ -66,9 +74,66 @@ class GameSateControl:
 
         print("-------------------------")
 
-    def __GenerateExpandStates(self):
+    def __CalculateExpandStates(self):
         
-        zeroPosition = self.__FindZeroPosition()
+        zeroPosition = self.__FindZeroPosition() # [layer, column]
+
+        canChange = []
+
+        if zeroPosition[0] == 0:
+            canChange.append([1,zeroPosition[1]])
+
+            if zeroPosition[1] == 1:
+                canChange.append([zeroPosition[0],0])
+                canChange.append([zeroPosition[0],2])
+            else:
+                canChange.append([zeroPosition[0],1])
+
+        elif zeroPosition[0] == 1:
+
+            canChange.append([0,zeroPosition[1]])
+            canChange.append([2,zeroPosition[1]])
+
+            if zeroPosition[1] == 1:
+                canChange.append([zeroPosition[0],0])
+                canChange.append([zeroPosition[0],2])
+            else:
+                canChange.append([zeroPosition[0],1])
+
+        elif zeroPosition[0] == 2:
+            canChange.append([1,zeroPosition[1]])
+
+            if zeroPosition[1] == 1:
+                canChange.append([zeroPosition[0],0])
+                canChange.append([zeroPosition[0],2])
+            else:
+                canChange.append([zeroPosition[0],1])
+
+        self.__GenerateExpandStates(canChange, zeroPosition)
+
+    def __GenerateExpandStates(self, canChange : list, zeroPosition: list):
+
+        newStates = []
+        
+        for position in canChange:
+            newState = []
+
+            for layer in self.__state:
+                values = []
+                for value in layer:
+                    values.append(int(value))
+                newState.append(values)
+                
+            
+            newState[zeroPosition[0]][zeroPosition[1]] = newState[position[0]][position[1]]
+            newState[position[0]][position[1]] = 0
+            
+            newStates.append(newState)
+
+        self.__expandStates = []
+        
+        for state in newStates:
+            self.__expandStates.append(self.__ExportState(state))
 
     def __FindZeroPosition(self):
 
@@ -88,11 +153,3 @@ class GameSateControl:
             layerCount +=1
 
         return position
-
-
-
-        
-
-state = GameSateControl([2,8,7,1,0,3,4,5,6])
-
-state.PrintState()
